@@ -1,5 +1,5 @@
 import keyboard
-from utils import cls
+from pytrivia.utils import cls
 
 selected = 1
 

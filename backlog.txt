@@ -1,5 +1,0 @@
-keep track of highest score
-increase number of points after round 10-20-30, etc.
-write question manager that queries 20 and delivers one after the other
-add menu
-add settings

@@ -1,7 +1,7 @@
 from typing import Callable, Type
 from abc import ABC, abstractmethod
 
-from utils import print_title, blank_separator, alphabetic_range
+from pytrivia.utils import print_title, blank_separator, alphabetic_range
 from pytrivia.base import query_random_question, query_3_questions
 
 

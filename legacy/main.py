@@ -1,7 +1,7 @@
 import math
 
 from pytrivia.base import query_random_question
-from utils import alphabetic_range, cls
+from pytrivia.utils import alphabetic_range, cls
 
 cached_questions = {}
 
