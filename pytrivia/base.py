@@ -2,7 +2,6 @@
 
 import random
 import requests
-import logging
 
 from enum import Enum
 from time import sleep
@@ -28,8 +27,9 @@ class Question:
     def __init__(self, text: str, category: str, answers: list):
         self._text = text
         self._category = category
-        self._answers = random.sample(answers, k=len(answers))
-        # self._random_ordering_indices = random.sample(range(len(answers)), k=len(answers))
+        self._answers = answers
+        # self._answers = random.sample(answers, k=len(answers))
+        self._random_ordering_indices = random.sample(range(len(answers)), k=len(answers))
 
     @property
     def text(self):
@@ -39,13 +39,9 @@ class Question:
     def category(self):
         return self._category
 
-    @property
-    def answers(self):
-        return self._answers
-
-    @property
-    def correctness(self):
-        return [ans.is_correct for ans in self._answers]
+    # @property
+    # def answers(self):
+    #     return self._answers
 
     @property
     def correct_answer(self):
@@ -59,9 +55,11 @@ class Question:
         assert len(wrong_answers) == len(self._answers) - 1
         return wrong_answers
 
-    def validate_answer(self, answer_idx):
-        correctness_seq = [ans.is_correct for ans in self._answers]
-        return correctness_seq[answer_idx]
+    def get_randomly_ordered_answers(self, n_max=None):
+        n_max = len(self._answers) if n_max is None else min(n_max, len(self._answers))
+        answers_to_combine = random.sample(self.wrong_answers, k=n_max-1) + [self.correct_answer]
+        assert sum([ans.is_correct for ans in answers_to_combine]) == 1
+        return random.sample(answers_to_combine, k=n_max)
 
 
 class Category(Enum):
@@ -121,13 +119,11 @@ class QueryBuilder:
             values = [values]
         for val in values:
             if val not in self._categories:
-                logging.debug(f"Adding category '{val}' to query parameters")
                 self._categories.append(val)
         return self
 
     def limit(self, value: int):
         self._limit = value
-        logging.debug(f"Adding limit of {value} to query parameters")
         return self
 
     def _build_query_url(self):
@@ -139,7 +135,6 @@ class QueryBuilder:
         limit_param = f"limit={self._limit}"
         query_params.append(limit_param)
         query_url = base_url if not query_params else base_url + f"?{'&'.join(query_params)}"
-        logging.debug(f"Querying '{query_url}'")
         return query_url
 
     @staticmethod
@@ -158,7 +153,6 @@ class QueryBuilder:
         success = False if response_data is None else True
         runs = 0
         while success is False and runs < 5:  # if API is unresponsive
-            logging.debug(f"No response from the API. Waiting 3 seconds")
             sleep(3)
             response_data = self._launch_single_query(*args, **kwargs)
             runs += 1
@@ -205,4 +199,13 @@ def query_question_in_category(category: Category):
 
 
 def query_3_questions():
-    pass
+    return query_trivia_api().limit(3).get_questions()
+
+
+class QuestionManager:
+
+    def __init__(self):
+        pass
+
+    def get_3_questions(self):
+        pass
