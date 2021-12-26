@@ -14,3 +14,6 @@ venv.bak/
 
 # Pycharm project
 .idea/
+
+# cache
+cache/
