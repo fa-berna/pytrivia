@@ -476,6 +476,7 @@ class Game:
             print(f"- Longest success streak: {cached_dict['success_streak']}")
         else:
             print("--No historical high score information--")
+        blank_separator()
 
     def _show_home_screen(self):
         # Logo generated via: https://www.fancytextpro.com/BigTextGenerator/
@@ -520,7 +521,7 @@ class Game:
         -------
 
         """
-        # initialize parameters for looping
+        # Initialize parameters for the game
         score = self.START_SCORE
         round = self.START_ROUND
         bonus_round = False
@@ -557,3 +558,22 @@ class Game:
         # save the score
         self._save_score()
 
+
+def run_game_in_loop():
+    """Function allows to play multiple games in a loop as long as the user does not decide to quit the application"""
+
+    def _get_user_willingness_to_play():
+        inpt = input("Press enter to start another game or enter 'q' to exit the application: ")
+        if inpt == 'q':
+            return False
+        else:
+            return True
+
+    keep_playing = True
+
+    while keep_playing:
+
+        game = Game()
+        game.play()
+
+        keep_playing = _get_user_willingness_to_play()
