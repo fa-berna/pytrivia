@@ -37,3 +37,8 @@ for this step to work).
 
 - An internet connection is needed to connect to the Trivia API.
 - Game was developed on Python 3.8.10
+
+
+## Credits
+
+- Will Fry's free to use Trivia API (https://trivia.willfry.co.uk/)
