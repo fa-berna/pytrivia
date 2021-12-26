@@ -380,7 +380,8 @@ class Game:
         int
             The number of rounds played in the game
         """
-        return len(self._rounds)
+        non_bonus_rounds = [rnd for rnd in self._rounds if not isinstance(rnd, BonusRound)]
+        return len(non_bonus_rounds)
 
     @property
     def current_round_number(self):
@@ -392,7 +393,8 @@ class Game:
             The current round number
         """
         if len(self._rounds) > 0:
-            return self._rounds[-1].number
+            non_bonus_rounds = [rnd for rnd in self._rounds if not isinstance(rnd, BonusRound)]
+            return non_bonus_rounds[-1].number
         else:
             return self.START_ROUND
 
@@ -454,7 +456,7 @@ class Game:
         print("Game summary:")
         print(f"- High score: {self.high_score}")
         print(f"- Number of rounds: {self.n_rounds}")
-        print(f"- Longest success streak {self.longest_success_streak}")
+        print(f"- Longest success streak: {self.longest_success_streak}")
         blank_separator()
         cached_dict = read_json_file_to_dict(self.CACHE_FOLDER + 'cache.json')
         if cached_dict is None:
