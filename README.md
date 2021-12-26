@@ -7,8 +7,8 @@ procedurally generated and user generated.
 
 ## How the game works
 
-You start the game with a **score** of 1 and the game is over whenever your score reaches 0. You start with a **streak 
-count** of 0 and 1 point is added for each consecutive correct answer to a normal round question. 
+You start the game with a **score** of 1 and the game is over whenever your score reaches 0. You start with a **success 
+streak count** of 0 and 1 point is added for each consecutive correct answer to a normal round question. 
 Each time you answer incorrectly in a normal round, the streak count is reset to 0. 
 
 In a **normal round**, you will be asked to choose amongst 4 possible answers by typing the letter corresponding to that 
@@ -18,6 +18,9 @@ If you reach a streak count of 3, you will be able to play a **bonus round**: yo
 no point deduction for a wrong answer. A bonus round is always followed and preceded by normal rounds.
 If you answer correctly to the question in the normal round following a bonus round (independently of your answer in the
 bonus round), you will have the chance to play another bonus round.
+
+Your high scores will be cached in a temporary cache folder within a JSON file. If you delete the cache/ folder, you 
+will reset your high score. 
 
 
 ## How to run the code
@@ -41,4 +44,4 @@ for this step to work).
 
 ## Credits
 
-- Will Fry's free to use Trivia API (https://trivia.willfry.co.uk/)
+- Will Fry's Trivia API (https://trivia.willfry.co.uk/)

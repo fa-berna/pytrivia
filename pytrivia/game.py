@@ -9,16 +9,25 @@ from pytrivia.utils import print_title,\
     create_file_if_missing, \
     read_json_file_to_dict, \
     write_dict_to_json_file
-from pytrivia.base import query_random_question,\
-    query_3_questions
+from pytrivia.base import request_random_question,\
+    request_3_questions
 
 
 class Round(ABC):
-    """
-    Abstract class for Round objects
-    """
+    """Abstract parent class for Round objects"""
 
-    def __init__(self, number, initial_score, initial_success_streak):
+    def __init__(self, number: int, initial_score: int, initial_success_streak: int):
+        """Initializes an object of the Round class
+
+        Parameters
+        ----------
+        number: int
+            Round number
+        initial_score: int
+            Score at the start of the round
+        initial_success_streak: int
+            Success streak at the start of the round
+        """
         self._number = number
         self._initial_score = initial_score
         self._initial_success_streak = initial_success_streak
@@ -28,22 +37,57 @@ class Round(ABC):
 
     @property
     def number(self):
+        """
+
+        Returns
+        -------
+        number: int
+            Round number
+        """
         return self._number
 
     @property
     def initial_score(self):
+        """
+
+        Returns
+        -------
+        initial_score: int
+            Score at the start of the round
+        """
         return self._initial_score
 
     @property
     def final_score(self):
+        """
+
+        Returns
+        -------
+        final_score: int
+            Score at the end of the round (after the user input has been evaluated)
+        """
         return self._final_score
 
     @property
     def initial_success_streak(self):
+        """
+
+        Returns
+        -------
+        initial_success_streak: int
+            Success streak at the start of the round
+        """
         return self._initial_success_streak
 
     @property
     def final_success_streak(self):
+        """
+
+        Returns
+        -------
+        final_success_streak:
+            Success streak at the end of the round
+        """
         return self._final_success_streak
 
     @abstractmethod
@@ -72,17 +116,35 @@ class Round(ABC):
 
 
 class RegularRound(Round):
+    """Class for regular rounds where the user faces a question with 4 possible answers and points are added (deducted)
+    for correct (incorrect) answers"""
 
     POS_POINTS = 1  # points added for a good answer
     NEG_POINTS = 1  # points deducted for a bad answer
 
     def __init__(self, *args, **kwargs):
+        """Instantiates an object of the class RegularRound
+
+        Parameters
+        ----------
+        *args
+            Variable length argument list.
+        **kwargs
+            Arbitrary keyword arguments.
+        """
         super().__init__(*args, **kwargs)
 
     def _set_question(self):
-        return query_random_question()
+        return request_random_question()
 
     def play(self):
+        """Starts a round that requests a random question from the API and asks the user to input the index
+        corresponding to the correct answer to a certain question.
+
+        Returns
+        -------
+
+        """
         # get question and answers
         question = self._question
         answers = question.get_randomly_ordered_answers(n_max=4)
@@ -124,15 +186,26 @@ class RegularRound(Round):
 
 
 class BonusRound(Round):
+    """Class for bonus rounds where the user is allowed to choose which question to answer amongst 3 possibles and then
+    faces a question with 4 possible answers and points are added for correct answers."""
 
     POS_POINTS = 2  # points added for a good answer
     NEG_POINTS = 0  # points deducted for a bad answer
 
     def __init__(self, *args, **kwargs):
+        """Instantiates an object of the class BonusRound
+
+        Parameters
+        ----------
+        *args
+            Variable length argument list.
+        **kwargs
+            Arbitrary keyword arguments.
+        """
         super().__init__(*args, **kwargs)
 
     def _set_question(self):
-        questions = query_3_questions()
+        questions = request_3_questions()
         print_title("BONUS ROUND")
         blank_separator()
         print("In a BONUS ROUND you can choose the question that you want to answer")
@@ -145,6 +218,13 @@ class BonusRound(Round):
         return questions[input_idx-1]
 
     def play(self):
+        """Starts a round that requests 3 random questions from the API, asks the user to select which of the three
+        questions to answer and then gives the user 4 possible answers to the chosen question.
+
+        Returns
+        -------
+
+        """
         # get question and answers
         question = self._question
         answers = question.get_randomly_ordered_answers(n_max=4)
@@ -183,56 +263,50 @@ class BonusRound(Round):
         blank_separator()
 
 
-class CategorySelectionRound(RegularRound):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def _set_question(self):
-        questions = query_3_questions()
-        n_round = self.number
-        print_title("BONUS ROUND")
-        blank_separator()
-        print("In a BONUS ROUND you can choose the question that you want to answer")
-        blank_separator()
-        for i in range(3):
-            print(f"{i+1}) {questions[i].text}")
-        blank_separator()
-        input_idx = int(input("Choose the question that you want to answer: "))
-        blank_separator()
-        return questions[input_idx-1]
-
-
-# class Settings:
-#
-#     def __init__(self, n_max_answers):
-#         self.n_max = n_max_answers
-
-
 class Game:
-    """
-    Game is comprised of a series of rounds and stops when points reach 0 or below.
-    """
+    """Game is comprised of a series of rounds and stops when points reach 0 or below."""
+
     START_SCORE = 1
     START_ROUND = 0
     START_SUCCESS_STREAK = 0
     BONUS_ROUND_SUCCESS_STREAK_THRES = 3
     CACHE_FOLDER = 'cache/'
 
-    def __init__(self):  # settings: Settings
-        # self._settings = settings
+    def __init__(self):
+        """Initializes an instance of Game"""
         self._rounds = []
 
     @property
     def high_score(self):
+        """
+
+        Returns
+        -------
+        int
+            The highest score reached at any point during the game
+        """
         return max([rnd.final_score for rnd in self._rounds] + [rnd.initial_score for rnd in self._rounds])
 
     @property
     def n_rounds(self):
+        """
+
+        Returns
+        -------
+        int
+            The number of rounds played in the game
+        """
         return len(self._rounds)
 
     @property
     def current_round_number(self):
+        """
+
+        Returns
+        -------
+        int
+            The current round number
+        """
         if len(self._rounds) > 0:
             return self._rounds[-1].number
         else:
@@ -240,6 +314,13 @@ class Game:
 
     @property
     def current_score(self):
+        """
+
+        Returns
+        -------
+        int
+            The current score (end of previous round if round just started)
+        """
         if len(self._rounds) > 0:
             return self._rounds[-1].final_score
         else:
@@ -247,6 +328,13 @@ class Game:
 
     @property
     def current_success_streak(self):
+        """
+
+        Returns
+        -------
+        int
+            The current success streak (end of the previous round if round just started)
+        """
         if len(self._rounds) > 0:
             return self._rounds[-1].final_success_streak
         else:
@@ -254,6 +342,13 @@ class Game:
 
     @property
     def longest_success_streak(self):
+        """
+
+        Returns
+        -------
+        int
+            The longest success streak at any point during the game
+        """
         return max([rnd.final_success_streak for rnd in self._rounds] +
                    [rnd.initial_success_streak for rnd in self._rounds])
 
@@ -269,6 +364,7 @@ class Game:
         next_round.play()
 
     def _show_game_over(self):
+        """Prints information about the score whenever the game ends."""
         print_title("GAME OVER")
         blank_separator()
         print("Game summary:")
@@ -298,7 +394,7 @@ class Game:
             print("--No historical high score information--")
 
     def _show_home_screen(self):
-        # Generated by: https://www.fancytextpro.com/BigTextGenerator/
+        # Logo generated via: https://www.fancytextpro.com/BigTextGenerator/
         message = """
 
                         Welcome to
@@ -334,6 +430,12 @@ class Game:
         write_dict_to_json_file(cache_dict, self.CACHE_FOLDER + 'cache.json')
 
     def play(self):
+        """Starts a while loop that launches one round after the other and ends whenever the score reaches 0 or below.
+
+        Returns
+        -------
+
+        """
         # initialize parameters for looping
         score = self.START_SCORE
         round = self.START_ROUND
