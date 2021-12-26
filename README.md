@@ -1,6 +1,12 @@
 # PyTrivia
 
-**Pytrivia** is a quiz game that tests your general knowledge through questions that range across 10 different categories.
+**Pytrivia** is a quiz game that tests your general knowledge through questions that range across 10 different 
+categories. It is built based on Will Fry's free to use Trivia API (https://trivia.willfry.co.uk/). Its questions are 
+procedurally generated and user generated. 
+
+
+## How the game works
+
 You start the game with a **score** of 1 and the game is over whenever your score reaches 0. You start with a **streak 
 count** of 0 and 1 point is added for each consecutive correct answer to a normal round question. 
 Each time you answer incorrectly in a normal round, the streak count is reset to 0. 
@@ -13,7 +19,9 @@ no point deduction for a wrong answer. A bonus round is always followed and prec
 If you answer correctly to the question in the normal round following a bonus round (independently of your answer in the
 bonus round), you will have the chance to play another bonus round.
 
+
 ## How to run the code
+
 1. Clone the repository
 2. Either:
     a) manually install all the libraries needed and listed in ``requirements.txt`` via the PIP (you can automate 
@@ -26,4 +34,6 @@ for this step to work).
 
 
 ## Notes
+
+- An internet connection is needed to connect to the Trivia API.
 - Game was developed on Python 3.8.10
