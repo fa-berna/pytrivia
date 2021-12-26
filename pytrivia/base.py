@@ -351,7 +351,7 @@ def request_random_question():
 
 
 def request_question_in_category(category: Category):
-    return request_from_trivia_api().categories([category]).limit(1).get_questions()
+    return request_from_trivia_api().categories([category]).limit(1).get_questions()[0]
 
 
 def request_3_questions():
